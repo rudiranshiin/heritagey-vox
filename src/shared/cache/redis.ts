@@ -48,8 +48,9 @@ export async function disconnectRedis(): Promise<void> {
   console.log('Redis disconnected');
 }
 
-// Cache helper functions
+// Cache helper functions - skip if Redis not available
 export async function cacheGet<T>(key: string): Promise<T | null> {
+  if (!isRedisAvailable()) return null;
   try {
     const data = await redis.get(key);
     return data ? JSON.parse(data) : null;
@@ -59,6 +60,7 @@ export async function cacheGet<T>(key: string): Promise<T | null> {
 }
 
 export async function cacheSet(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
+  if (!isRedisAvailable()) return;
   try {
     const data = JSON.stringify(value);
     if (ttlSeconds) {
@@ -66,27 +68,29 @@ export async function cacheSet(key: string, value: unknown, ttlSeconds?: number)
     } else {
       await redis.set(key, data);
     }
-  } catch (error) {
-    console.error('Cache set error:', error);
+  } catch {
+    // Silently fail - caching is optional
   }
 }
 
 export async function cacheDelete(key: string): Promise<void> {
+  if (!isRedisAvailable()) return;
   try {
     await redis.del(key);
-  } catch (error) {
-    console.error('Cache delete error:', error);
+  } catch {
+    // Silently fail
   }
 }
 
 export async function cacheDeletePattern(pattern: string): Promise<void> {
+  if (!isRedisAvailable()) return;
   try {
     const keys = await redis.keys(pattern);
     if (keys.length > 0) {
       await redis.del(...keys);
     }
-  } catch (error) {
-    console.error('Cache delete pattern error:', error);
+  } catch {
+    // Silently fail
   }
 }
 

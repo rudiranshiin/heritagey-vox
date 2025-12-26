@@ -45,26 +45,26 @@ router.get('/health', async (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     services: {
       database: 'unknown',
-      cache: 'unknown',
+      cache: 'disabled', // Redis is optional
     },
   };
 
   try {
-    // Check database connection
+    // Check database connection (required)
     await prisma.$queryRaw`SELECT 1`;
     health.services.database = 'connected';
   } catch {
     health.services.database = 'disconnected';
-    health.status = 'degraded';
+    health.status = 'unhealthy';
   }
 
   try {
-    // Check Redis connection
+    // Check Redis connection (optional)
     const pong = await redis.ping();
-    health.services.cache = pong === 'PONG' ? 'connected' : 'disconnected';
+    health.services.cache = pong === 'PONG' ? 'connected' : 'disabled';
   } catch {
-    health.services.cache = 'disconnected';
-    health.status = 'degraded';
+    health.services.cache = 'disabled';
+    // Don't degrade status - Redis is optional
   }
 
   const statusCode = health.status === 'healthy' ? 200 : 503;
