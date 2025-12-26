@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
+import { seedCurriculum } from './curriculum';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('🌱 Starting seed...');
+async function seedLanguages() {
+  console.log('🌍 Seeding Languages...');
 
-  // Seed Languages
   const languages = [
     {
       code: 'en-GB',
@@ -19,21 +19,21 @@ async function main() {
       name: 'French',
       nativeName: 'Français',
       flag: '🇫🇷',
-      isActive: false, // Coming soon
+      isActive: false,
     },
     {
       code: 'es-ES',
       name: 'Spanish',
       nativeName: 'Español',
       flag: '🇪🇸',
-      isActive: false, // Coming soon
+      isActive: false,
     },
     {
       code: 'de-DE',
       name: 'German',
       nativeName: 'Deutsch',
       flag: '🇩🇪',
-      isActive: false, // Coming soon
+      isActive: false,
     },
   ];
 
@@ -43,10 +43,20 @@ async function main() {
       update: lang,
       create: lang,
     });
-    console.log(`  ✅ Language: ${lang.name} (${lang.code})`);
+    console.log(`  ✅ ${lang.name} (${lang.code})`);
   }
+}
 
-  console.log('🌱 Seed completed!');
+async function main() {
+  console.log('🌱 Starting seed...\n');
+
+  // Seed languages first
+  await seedLanguages();
+
+  // Seed curriculum (modules, scenarios, pathways)
+  await seedCurriculum(prisma);
+
+  console.log('🌱 All seeding complete!');
 }
 
 main()

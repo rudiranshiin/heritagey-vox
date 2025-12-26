@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from './shared/database/prisma';
 import { redis } from './shared/cache/redis';
+import { curriculumRoutes } from './modules/curriculum';
 
 const router = Router();
 
@@ -111,7 +112,10 @@ router.get('/api/v1/languages', async (_req: Request, res: Response) => {
   }
 });
 
-// Placeholder routes - will be replaced with module routes
+// Curriculum routes
+router.use('/api/v1/curriculum', curriculumRoutes);
+
+// API info
 router.get('/api/v1', (_req: Request, res: Response) => {
   res.json({
     name: 'Heritagey Vox API',
@@ -121,8 +125,12 @@ router.get('/api/v1', (_req: Request, res: Response) => {
       health: '/health',
       docs: '/api-docs',
       languages: '/api/v1/languages',
+      curriculum: {
+        modules: '/api/v1/curriculum/modules',
+        scenarios: '/api/v1/curriculum/scenarios/:id',
+        pathways: '/api/v1/curriculum/pathways',
+      },
       learners: '/api/v1/learners (coming soon)',
-      curriculum: '/api/v1/curriculum (coming soon)',
       sessions: '/api/v1/sessions (coming soon)',
     },
   });
