@@ -28,10 +28,7 @@ export class PreferenceTracker {
     this.sessionHistory.set(key, history);
   }
 
-  async inferPreferences(
-    learnerId: string,
-    languageCode: string
-  ): Promise<PreferenceUpdate[]> {
+  async inferPreferences(learnerId: string, languageCode: string): Promise<PreferenceUpdate[]> {
     const key = `${learnerId}:${languageCode}`;
     const history = this.sessionHistory.get(key) || [];
 
@@ -93,7 +90,8 @@ export class PreferenceTracker {
 
     if (!memory) return null;
 
-    const currentPrefs = (memory.preferences as unknown as LearnerPreferences) || DEFAULT_PREFERENCES;
+    const currentPrefs =
+      (memory.preferences as unknown as LearnerPreferences) || DEFAULT_PREFERENCES;
     const updatedPrefs = { ...currentPrefs };
 
     for (const update of updates) {
@@ -216,4 +214,3 @@ export class PreferenceTracker {
 }
 
 export const preferenceTracker = new PreferenceTracker();
-

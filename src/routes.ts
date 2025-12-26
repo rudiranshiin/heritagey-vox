@@ -3,6 +3,7 @@ import { prisma } from './shared/database/prisma';
 import { redis } from './shared/cache/redis';
 import { curriculumRoutes } from './modules/curriculum';
 import { learnerRoutes } from './modules/learner';
+import { sessionRoutes } from './modules/session';
 
 const router = Router();
 
@@ -119,6 +120,9 @@ router.use('/api/v1/curriculum', curriculumRoutes);
 // Learner routes
 router.use('/api/v1/learners', learnerRoutes);
 
+// Session routes
+router.use('/api/v1/sessions', sessionRoutes);
+
 // API info
 router.get('/api/v1', (_req: Request, res: Response) => {
   res.json({
@@ -144,7 +148,20 @@ router.get('/api/v1', (_req: Request, res: Response) => {
         memory: '/api/v1/learners/:id/memory/:languageCode',
         languages: '/api/v1/learners/:id/languages',
       },
-      sessions: '/api/v1/sessions (coming soon)',
+      sessions: {
+        list: '/api/v1/sessions',
+        create: 'POST /api/v1/sessions',
+        get: '/api/v1/sessions/:id',
+        context: '/api/v1/sessions/:id/context',
+        active: '/api/v1/sessions/active/:learnerId',
+        history: '/api/v1/sessions/history/:learnerId',
+        stats: '/api/v1/sessions/stats/:learnerId',
+        events: 'POST /api/v1/sessions/:id/events',
+        pause: 'POST /api/v1/sessions/:id/pause',
+        resume: 'POST /api/v1/sessions/:id/resume',
+        complete: 'POST /api/v1/sessions/:id/complete',
+        abandon: 'POST /api/v1/sessions/:id/abandon',
+      },
     },
   });
 });

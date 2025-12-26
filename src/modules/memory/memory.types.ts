@@ -99,4 +99,3 @@ export interface ProgressUpdate {
 }
 
 export type { ErrorCategory, ErrorPattern, ProgressData };
-

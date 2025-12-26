@@ -42,24 +42,15 @@ export class TrendDetector {
     };
   }
 
-  calculateCategoryTrends(
-    patterns: ErrorPattern[],
-    windowDays: number
-  ): TrendAnalysis[] {
+  calculateCategoryTrends(patterns: ErrorPattern[], windowDays: number): TrendAnalysis[] {
     const now = new Date();
     const windowStart = new Date(now.getTime() - windowDays * 24 * 60 * 60 * 1000);
-    const previousWindowStart = new Date(
-      windowStart.getTime() - windowDays * 24 * 60 * 60 * 1000
-    );
+    const previousWindowStart = new Date(windowStart.getTime() - windowDays * 24 * 60 * 60 * 1000);
 
     return patterns.map((pattern) => {
-      const currentExamples = pattern.examples.filter(
-        (e) => new Date(e.timestamp) >= windowStart
-      );
+      const currentExamples = pattern.examples.filter((e) => new Date(e.timestamp) >= windowStart);
       const previousExamples = pattern.examples.filter(
-        (e) =>
-          new Date(e.timestamp) >= previousWindowStart &&
-          new Date(e.timestamp) < windowStart
+        (e) => new Date(e.timestamp) >= previousWindowStart && new Date(e.timestamp) < windowStart
       );
 
       const currentCount = currentExamples.length;
@@ -91,9 +82,7 @@ export class TrendDetector {
     });
   }
 
-  calculateOverallTrend(
-    trends: TrendAnalysis[]
-  ): 'improving' | 'stable' | 'worsening' {
+  calculateOverallTrend(trends: TrendAnalysis[]): 'improving' | 'stable' | 'worsening' {
     if (trends.length === 0) return 'stable';
 
     const totalCurrentErrors = trends.reduce((sum, t) => sum + t.currentCount, 0);
@@ -103,8 +92,7 @@ export class TrendDetector {
       return totalCurrentErrors === 0 ? 'stable' : 'worsening';
     }
 
-    const overallChange =
-      ((totalCurrentErrors - totalPreviousErrors) / totalPreviousErrors) * 100;
+    const overallChange = ((totalCurrentErrors - totalPreviousErrors) / totalPreviousErrors) * 100;
 
     if (overallChange <= this.IMPROVEMENT_THRESHOLD) {
       return 'improving';
@@ -131,7 +119,7 @@ export class TrendDetector {
         return {
           category: t.category,
           subcategory: t.subcategory,
-          direction: t.percentageChange < 0 ? 'better' as const : 'worse' as const,
+          direction: t.percentageChange < 0 ? ('better' as const) : ('worse' as const),
           magnitude,
         };
       })
@@ -164,9 +152,7 @@ export class TrendDetector {
       );
     }
 
-    const persistentIssues = trends.filter(
-      (t) => t.currentCount >= 3 && t.trend !== 'improving'
-    );
+    const persistentIssues = trends.filter((t) => t.currentCount >= 3 && t.trend !== 'improving');
     if (persistentIssues.length > 0 && recommendations.length < 3) {
       const persistent = persistentIssues[0];
       recommendations.push(
@@ -214,4 +200,3 @@ export class TrendDetector {
 }
 
 export const trendDetector = new TrendDetector();
-

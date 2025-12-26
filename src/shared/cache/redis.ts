@@ -19,9 +19,20 @@ redis.on('connect', () => {
   console.log('✅ Redis connected');
 });
 
+let redisConnected = false;
+
 redis.on('ready', () => {
   console.log('Redis ready');
+  redisConnected = true;
 });
+
+redis.on('close', () => {
+  redisConnected = false;
+});
+
+export function isRedisAvailable(): boolean {
+  return redisConnected && redis.status === 'ready';
+}
 
 export async function connectRedis(): Promise<void> {
   try {

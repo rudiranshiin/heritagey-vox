@@ -195,4 +195,3 @@ export class CurriculumService {
 }
 
 export const curriculumService = new CurriculumService();
-
