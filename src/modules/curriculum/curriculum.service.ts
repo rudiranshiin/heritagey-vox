@@ -21,8 +21,13 @@ export class CurriculumService {
 
     const where: Record<string, unknown> = {};
     if (query.language) where.languageCode = query.language;
-    if (query.level) where.level = query.level;
     if (query.parentModule) where.parentModuleId = query.parentModule;
+
+    // Level filter: match if the queried level is contained in the module's level range
+    // e.g., "A2" matches "A2-B1", "B1" matches "A2-B1" or "B1-B2"
+    if (query.level) {
+      where.level = { contains: query.level };
+    }
 
     const modules = await prisma.module.findMany({
       where,
