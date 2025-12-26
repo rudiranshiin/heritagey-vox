@@ -5,6 +5,7 @@ import { curriculumRoutes } from './modules/curriculum';
 import { learnerRoutes } from './modules/learner';
 import { sessionRoutes } from './modules/session';
 import { assessmentRoutes } from './modules/assessment';
+import { voiceRoutes } from './modules/voice';
 
 const router = Router();
 
@@ -126,6 +127,9 @@ router.use('/api/v1/sessions', sessionRoutes);
 
 // Assessment routes
 router.use('/api/v1/assessments', assessmentRoutes);
+
+// Voice routes (OpenAI Realtime API)
+router.use('/api/v1/voice', voiceRoutes);
 
 // API info
 router.get('/api/v1', (_req: Request, res: Response) => {
