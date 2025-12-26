@@ -1,6 +1,6 @@
 import app from './app';
 
-const PORT = process.env.PORT || 4003;
+const PORT = process.env.PORT || 4002;
 
 const server = app.listen(PORT, () => {
   console.log(`🚀 Heritagey Vox server running on port ${PORT}`);
@@ -23,4 +23,3 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
-
