@@ -137,4 +137,3 @@ router.get('/api/v1', (_req: Request, res: Response) => {
 });
 
 export default router;
-

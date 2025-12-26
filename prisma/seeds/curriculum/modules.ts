@@ -12,7 +12,8 @@ export async function seedModules(prisma: PrismaClient) {
       languageCode: LANG,
       parentModuleId: null,
       title: 'Foundation',
-      description: 'Building Conversational Confidence - Navigate everyday conversations with confidence',
+      description:
+        'Building Conversational Confidence - Navigate everyday conversations with confidence',
       level: 'A2-B1',
       objectives: [
         'Navigate everyday conversations with confidence',
@@ -270,7 +271,8 @@ export async function seedModules(prisma: PrismaClient) {
       languageCode: LANG,
       parentModuleId: null,
       title: 'Mastery',
-      description: 'Achieving Native-Like Proficiency - Function linguistically indistinguishable from natives',
+      description:
+        'Achieving Native-Like Proficiency - Function linguistically indistinguishable from natives',
       level: 'C1-C2',
       objectives: [
         'Function linguistically indistinguishable from educated native speakers',
@@ -344,4 +346,3 @@ export async function seedModules(prisma: PrismaClient) {
 
   console.log(`    ✅ Created ${modules.length} modules`);
 }
-

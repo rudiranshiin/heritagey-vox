@@ -10,7 +10,8 @@ export async function seedPathways(prisma: PrismaClient) {
       id: `${LANG}:business`,
       languageCode: LANG,
       name: 'Business Professional',
-      description: 'Focused pathway for those needing British English for work. Emphasizes professional communication, interviews, meetings, and workplace culture.',
+      description:
+        'Focused pathway for those needing British English for work. Emphasizes professional communication, interviews, meetings, and workplace culture.',
       moduleOverrides: {
         '2B': 1, // Professional communication first
         '3D': 2, // Professional excellence
@@ -27,7 +28,8 @@ export async function seedPathways(prisma: PrismaClient) {
       id: `${LANG}:academic`,
       languageCode: LANG,
       name: 'Academic Learner',
-      description: 'For students preparing for UK university or academic careers. Focuses on academic writing, seminar participation, and intellectual discourse.',
+      description:
+        'For students preparing for UK university or academic careers. Focuses on academic writing, seminar participation, and intellectual discourse.',
       moduleOverrides: {
         '2B': 1, // Academic communication
         '3B': 2, // Intellectual discourse
@@ -44,7 +46,8 @@ export async function seedPathways(prisma: PrismaClient) {
       id: `${LANG}:social`,
       languageCode: LANG,
       name: 'Social and Cultural',
-      description: 'For those wanting to make friends, integrate socially, and enjoy British culture. Emphasizes casual conversation, humor, and cultural knowledge.',
+      description:
+        'For those wanting to make friends, integrate socially, and enjoy British culture. Emphasizes casual conversation, humor, and cultural knowledge.',
       moduleOverrides: {
         '1B': 1, // Social connections
         '2C': 2, // Cultural immersion
@@ -61,7 +64,8 @@ export async function seedPathways(prisma: PrismaClient) {
       id: `${LANG}:relocation`,
       languageCode: LANG,
       name: 'Relocation Preparation',
-      description: 'For those moving to the UK. Prioritizes practical life skills: housing, healthcare, banking, and everyday necessities.',
+      description:
+        'For those moving to the UK. Prioritizes practical life skills: housing, healthcare, banking, and everyday necessities.',
       moduleOverrides: {
         '1C': 1, // Practical life management
         '1A': 2, // Daily interactions
@@ -78,7 +82,8 @@ export async function seedPathways(prisma: PrismaClient) {
       id: `${LANG}:heritage`,
       languageCode: LANG,
       name: 'Heritage and Family',
-      description: 'For those with British family connections looking to reconnect with their heritage. Focuses on intergenerational communication and cultural roots.',
+      description:
+        'For those with British family connections looking to reconnect with their heritage. Focuses on intergenerational communication and cultural roots.',
       moduleOverrides: {
         '2C': 1, // Cultural deep-dive
         '1B': 2, // Family social connections
@@ -103,4 +108,3 @@ export async function seedPathways(prisma: PrismaClient) {
 
   console.log(`    ✅ Created ${pathways.length} pathways`);
 }
-
