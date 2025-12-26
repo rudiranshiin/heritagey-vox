@@ -1,8 +1,8 @@
 # Heritagey Vox
 
-**Context-Engineered British English Curriculum Backend**
+**Context-Engineered Multi-Language Curriculum Backend**
 
-A backend service for AI-powered British English language learning, providing personalized curriculum delivery through context engineering architecture.
+A backend service for AI-powered language learning, providing personalized curriculum delivery through context engineering architecture. Supports multiple languages with separate progress tracking per language.
 
 ## 🎯 Vision
 
@@ -86,9 +86,18 @@ The service implements context engineering for personalized learning:
 3. **Preference Learning**: Adjust difficulty, pace, and topics based on behavior
 4. **Long-term Intent**: Learning goals inform all recommendations
 
+## 🌍 Supported Languages
+
+| Language | Code | Status |
+|----------|------|--------|
+| British English | `en-GB` | ✅ Active |
+| French | `fr-FR` | 🔜 Planned |
+| Spanish | `es-ES` | 🔜 Planned |
+| German | `de-DE` | 🔜 Planned |
+
 ## 📊 Curriculum Structure
 
-Based on CEFR levels with 4 main modules:
+Based on CEFR levels with 4 main modules per language:
 
 | Module | Level | Focus |
 |--------|-------|-------|

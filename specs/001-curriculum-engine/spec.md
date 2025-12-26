@@ -1,8 +1,15 @@
-# British English Curriculum Engine Specification
+# Multi-Language Curriculum Engine Specification
 
 ## Overview
 
-The Curriculum Engine is the core backend service for Heritagey Vox, providing context-engineered British English learning experiences through an AI voice agent. It manages learner memory, curriculum content, session orchestration, and adaptive feedback—all designed for conversational learning.
+The Curriculum Engine is the core backend service for Heritagey Vox, providing context-engineered language learning experiences through an AI voice agent. It manages learner memory, curriculum content, session orchestration, and adaptive feedback—all designed for conversational learning.
+
+**Supported Languages** (extensible):
+- `en-GB` - British English (initial)
+- `fr-FR` - French (planned)
+- `es-ES` - Spanish (planned)
+- `de-DE` - German (planned)
+- Additional languages can be added via curriculum seeding
 
 ## User Stories
 
@@ -10,7 +17,9 @@ The Curriculum Engine is the core backend service for Heritagey Vox, providing c
 
 **As a learner**, I want the AI voice agent to remember my progress, mistakes, and preferences so that every session picks up where I left off and adapts to my needs.
 
-**As a learner**, I want culturally authentic British English content at my level so that I can build real-world communication skills.
+**As a learner**, I want culturally authentic content in my target language at my level so that I can build real-world communication skills.
+
+**As a learner**, I want to study multiple languages with separate progress tracking for each.
 
 **As a learner**, I want personalized feedback on my error patterns so that I can improve efficiently.
 
@@ -58,11 +67,18 @@ The system MUST maintain persistent memory of each learner including:
    - Learning goals and timeline
    - Interests and hobbies (for scenario personalization)
 
+5. **Multi-Language Support**
+   - Target language(s) the learner is studying
+   - Separate progress tracking per language
+   - Language-specific error patterns and preferences
+
 ### FR2: Curriculum Content Management
 
-The system MUST structure curriculum content per the British English Fluency Roadmap:
+The system MUST structure curriculum content with multi-language support:
 
-1. **Module Structure** (4 modules, 16 sub-modules)
+1. **Language-Specific Modules** (4 modules per language, 16 sub-modules each)
+   - Each language has its own complete curriculum
+   - Module IDs are prefixed with language code (e.g., `en-GB:1A`, `fr-FR:1A`)
    - Module 1: Foundation (A2-B1) - 4 sub-modules
    - Module 2: Intermediate (B1-B2) - 4 sub-modules
    - Module 3: Advanced (B2-C1) - 4 sub-modules
@@ -199,9 +215,32 @@ Records a new error occurrence.
 
 ### Curriculum APIs
 
-#### GET /api/v1/curriculum/modules
+#### GET /api/v1/languages
 
-Returns all modules with structure.
+Returns all supported languages.
+
+```json
+[
+  {
+    "code": "en-GB",
+    "name": "British English",
+    "nativeName": "British English",
+    "flag": "🇬🇧",
+    "isActive": true
+  },
+  {
+    "code": "fr-FR",
+    "name": "French",
+    "nativeName": "Français",
+    "flag": "🇫🇷",
+    "isActive": true
+  }
+]
+```
+
+#### GET /api/v1/curriculum/modules?language={code}
+
+Returns all modules for a specific language. If no language specified, returns all.
 
 #### GET /api/v1/curriculum/modules/{moduleId}/scenarios
 
@@ -371,15 +410,36 @@ Returns progression recommendations.
 
 ### Core Entities
 
+#### Language
+
+| Field | Type | Description |
+|-------|------|-------------|
+| code | String | ISO language code (e.g., "en-GB", "fr-FR") |
+| name | String | Language name in English |
+| nativeName | String | Language name in native script |
+| flag | String | Emoji flag |
+| isActive | Boolean | Whether curriculum is available |
+
 #### Learner
 
 | Field | Type | Description |
 |-------|------|-------------|
 | id | UUID | Primary identifier |
 | externalId | String | ID from main Heritagey backend |
+| createdAt | DateTime | Account creation |
+| updatedAt | DateTime | Last update |
+
+#### LearnerLanguage (per-language progress)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary identifier |
+| learnerId | UUID | Foreign key to Learner |
+| languageCode | String | Target language (e.g., "en-GB") |
 | currentLevel | Enum | CEFR level (A2, B1, B2, C1, C2) |
 | currentModuleId | String | Current module reference |
-| createdAt | DateTime | Account creation |
+| isActive | Boolean | Currently studying this language |
+| createdAt | DateTime | Started learning this language |
 | updatedAt | DateTime | Last update |
 
 #### LearnerMemory
@@ -398,7 +458,8 @@ Returns progression recommendations.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | String | Module identifier (1A, 2B, etc.) |
+| id | String | Module identifier (e.g., "en-GB:1A") |
+| languageCode | String | Target language |
 | parentModuleId | String | Parent module (1, 2, 3, 4) |
 | title | String | Module title |
 | level | String | CEFR level range |
@@ -464,7 +525,8 @@ Returns progression recommendations.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| id | String | Pathway identifier |
+| id | String | Pathway identifier (e.g., "en-GB:business") |
+| languageCode | String | Target language |
 | name | String | Pathway name |
 | description | Text | Pathway description |
 | moduleOverrides | JSON | Module priority adjustments |

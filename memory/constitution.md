@@ -2,7 +2,14 @@
 
 ## Vision
 
-Build a **Context-Engineered British English Curriculum Backend** that powers an AI voice agent for personalized language learning, maintaining memory of learner progress, adapting to individual needs, and providing culturally immersive British English fluency training.
+Build a **Context-Engineered Multi-Language Curriculum Backend** that powers an AI voice agent for personalized language learning, maintaining memory of learner progress, adapting to individual needs, and providing culturally immersive fluency training in multiple languages.
+
+**Supported Languages** (extensible):
+- British English (`en-GB`) - Initial focus
+- French (`fr-FR`) - Planned
+- Spanish (`es-ES`) - Planned
+- German (`de-DE`) - Planned
+- Additional languages via curriculum seeding
 
 ## Core Principles
 
@@ -75,11 +82,12 @@ Build a **Context-Engineered British English Curriculum Backend** that powers an
 
 ### Must Have
 
-- CEFR-aligned content structure (Modules 1-4 from curriculum spec)
-- Learner memory persistence across sessions
+- Multi-language support with per-language curriculum and progress
+- CEFR-aligned content structure (Modules 1-4 per language)
+- Learner memory persistence across sessions (per language)
 - Error pattern tracking and feedback customization
 - Session management with context handoff to voice agent
-- Cultural knowledge integration for British English specifics
+- Cultural knowledge integration for each target language
 
 ### Must Not Have
 

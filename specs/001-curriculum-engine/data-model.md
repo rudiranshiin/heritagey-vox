@@ -1,47 +1,43 @@
-# Data Model - British English Curriculum Engine
+# Data Model - Multi-Language Curriculum Engine
 
 ## Entity Relationship Diagram
 
 ```
-┌─────────────────┐       ┌─────────────────┐
-│     Learner     │       │     Module      │
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│    Language     │       │     Learner     │       │     Module      │
+├─────────────────┤       ├─────────────────┤       ├─────────────────┤
+│ code (PK)       │       │ id (PK)         │       │ id (PK)         │
+│ name            │       │ externalId      │       │ languageCode(FK)│
+│ nativeName      │       │ createdAt       │       │ parentModuleId  │
+│ flag            │       │ updatedAt       │       │ title           │
+│ isActive        │       └────────┬────────┘       │ level           │
+└────────┬────────┘                │                │ objectives      │
+         │                         │                │ duration        │
+         │        ┌────────────────┼───────┐        │ order           │
+         │        │                │       │        └────────┬────────┘
+         │        ▼                ▼       ▼                 │
+         │  ┌─────────────┐  ┌──────────────────┐            ▼
+         │  │LearnerLang  │  │  LearnerMemory   │  ┌─────────────────┐
+         │  ├─────────────┤  ├──────────────────┤  │    Scenario     │
+         └─▶│ id (PK)     │  │ id (PK)          │  ├─────────────────┤
+            │ learnerId   │  │ learnerId (FK)   │  │ id (PK)         │
+            │ langCode(FK)│  │ languageCode(FK) │  │ moduleId (FK)   │
+            │ currentLevel│  │ progressData     │  │ title           │
+            │ currentMod  │  │ errorPatterns    │  │ context         │
+            │ isActive    │  │ preferences      │  │ objectives      │
+            └─────────────┘  │ profile          │  │ culturalInsights│
+                             └──────────────────┘  │ grammarNotes    │
+                                                   │ commonMistakes  │
+┌─────────────────┐       ┌─────────────────┐      │ successCriteria │
+│    Session      │       │    Pathway      │      └─────────────────┘
 ├─────────────────┤       ├─────────────────┤
 │ id (PK)         │       │ id (PK)         │
-│ externalId      │       │ parentModuleId  │
-│ currentLevel    │       │ title           │
-│ currentModuleId │───┐   │ level           │
-│ createdAt       │   │   │ objectives      │
-│ updatedAt       │   │   │ duration        │
-└────────┬────────┘   │   │ order           │
-         │            │   └────────┬────────┘
-         │            │            │
-         ▼            │            ▼
-┌─────────────────┐   │   ┌─────────────────┐
-│  LearnerMemory  │   │   │    Scenario     │
-├─────────────────┤   │   ├─────────────────┤
-│ id (PK)         │   │   │ id (PK)         │
-│ learnerId (FK)  │   └──▶│ moduleId (FK)   │
-│ progressData    │       │ title           │
-│ errorPatterns   │       │ context         │
-│ preferences     │       │ objectives      │
-│ profile         │       │ activities      │
-│ updatedAt       │       │ culturalInsights│
-└─────────────────┘       │ grammarNotes    │
-         │                │ commonMistakes  │
-         │                │ successCriteria │
-         ▼                │ order           │
-┌─────────────────┐       └─────────────────┘
-│    Session      │
-├─────────────────┤       ┌─────────────────┐
-│ id (PK)         │       │    Pathway      │
-│ learnerId (FK)  │       ├─────────────────┤
-│ scenarioId      │       │ id (PK)         │
-│ status          │       │ name            │
-│ startedAt       │       │ description     │
-│ completedAt     │       │ moduleOverrides │
-│ events          │       │ additionalContent│
-│ metrics         │       └─────────────────┘
-└────────┬────────┘
+│ learnerId (FK)  │       │ languageCode(FK)│
+│ languageCode    │       │ name            │
+│ scenarioId      │       │ description     │
+│ status          │       │ moduleOverrides │
+│ events/metrics  │       │ additionalContent│
+└────────┬────────┘       └─────────────────┘
          │
          ▼
 ┌─────────────────┐       ┌─────────────────┐
@@ -49,13 +45,12 @@
 ├─────────────────┤       ├─────────────────┤
 │ id (PK)         │       │ id (PK)         │
 │ learnerId (FK)  │       │ learnerId (FK)  │
+│ languageCode    │       │ languageCode    │
 │ sessionId (FK)  │       │ type            │
 │ category        │       │ moduleId        │
-│ subcategory     │       │ scores          │
-│ context         │       │ recommendations │
-│ corrected       │       │ createdAt       │
-│ timestamp       │       └─────────────────┘
-└─────────────────┘
+│ context         │       │ scores          │
+│ corrected       │       │ recommendations │
+└─────────────────┘       └─────────────────┘
 ```
 
 ---
@@ -74,29 +69,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ==================== LANGUAGE DOMAIN ====================
+
+model Language {
+  code        String   @id // ISO code: "en-GB", "fr-FR", "es-ES"
+  name        String   // English name: "British English", "French"
+  nativeName  String   // Native name: "British English", "Français"
+  flag        String   // Emoji: "🇬🇧", "🇫🇷"
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  modules          Module[]
+  pathways         Pathway[]
+  learnerLanguages LearnerLanguage[]
+  learnerMemories  LearnerMemory[]
+}
+
 // ==================== LEARNER DOMAIN ====================
 
 model Learner {
   id              String   @id @default(uuid())
   externalId      String   @unique // From main Heritagey backend
-  currentLevel    Level    @default(A2)
-  currentModuleId String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   // Relations
-  memory      LearnerMemory?
+  languages   LearnerLanguage[]
+  memories    LearnerMemory[]
   sessions    Session[]
   errorLogs   ErrorLog[]
   assessments Assessment[]
 
   @@index([externalId])
-  @@index([currentLevel])
+}
+
+model LearnerLanguage {
+  id              String   @id @default(uuid())
+  learnerId       String
+  languageCode    String
+  currentLevel    Level    @default(A2)
+  currentModuleId String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  learner  Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageCode], references: [code])
+
+  @@unique([learnerId, languageCode])
+  @@index([learnerId])
+  @@index([languageCode])
 }
 
 model LearnerMemory {
   id            String   @id @default(uuid())
-  learnerId     String   @unique
+  learnerId     String
+  languageCode  String   // Memory is per-language
   progressData  Json     @default("{}")  // ProgressData type
   errorPatterns Json     @default("[]")  // ErrorPattern[] type
   preferences   Json     @default("{}")  // LearnerPreferences type
@@ -104,9 +135,12 @@ model LearnerMemory {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  learner Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  learner  Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageCode], references: [code])
 
+  @@unique([learnerId, languageCode])
   @@index([learnerId])
+  @@index([languageCode])
 }
 
 enum Level {
@@ -120,7 +154,8 @@ enum Level {
 // ==================== CURRICULUM DOMAIN ====================
 
 model Module {
-  id             String   @id // e.g., "1A", "2B", "3C"
+  id             String   @id // e.g., "en-GB:1A", "fr-FR:2B"
+  languageCode   String   // Target language
   parentModuleId String?  // e.g., "1", "2", "3", "4" for top-level grouping
   title          String
   level          String   // e.g., "A2-B1", "B1-B2"
@@ -131,8 +166,10 @@ model Module {
   updatedAt      DateTime @updatedAt
 
   // Relations
+  language  Language   @relation(fields: [languageCode], references: [code])
   scenarios Scenario[]
 
+  @@index([languageCode])
   @@index([parentModuleId])
   @@index([level])
 }
@@ -160,27 +197,34 @@ model Scenario {
 }
 
 model Pathway {
-  id               String   @id // e.g., "business", "academic"
+  id               String   @id // e.g., "en-GB:business", "fr-FR:academic"
+  languageCode     String   // Target language
   name             String
   description      String   @db.Text
   moduleOverrides  Json     @default("{}")  // Module priority adjustments
   additionalContent Json    @default("[]")  // Pathway-specific content
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  // Relations
+  language Language @relation(fields: [languageCode], references: [code])
+
+  @@index([languageCode])
 }
 
 // ==================== SESSION DOMAIN ====================
 
 model Session {
-  id          String        @id @default(uuid())
-  learnerId   String
-  scenarioId  String?
-  status      SessionStatus @default(ACTIVE)
-  startedAt   DateTime      @default(now())
-  completedAt DateTime?
-  events      Json          @default("[]")  // SessionEvent[]
-  metrics     Json?         // SessionMetrics
-  metadata    Json?         // Additional session metadata
+  id           String        @id @default(uuid())
+  learnerId    String
+  languageCode String        // Which language is being practiced
+  scenarioId   String?
+  status       SessionStatus @default(ACTIVE)
+  startedAt    DateTime      @default(now())
+  completedAt  DateTime?
+  events       Json          @default("[]")  // SessionEvent[]
+  metrics      Json?         // SessionMetrics
+  metadata     Json?         // Additional session metadata
 
   // Relations
   learner   Learner    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
@@ -188,6 +232,7 @@ model Session {
   errorLogs ErrorLog[]
 
   @@index([learnerId])
+  @@index([languageCode])
   @@index([status])
   @@index([startedAt])
 }
@@ -200,23 +245,25 @@ enum SessionStatus {
 }
 
 model ErrorLog {
-  id          String   @id @default(uuid())
-  learnerId   String
-  sessionId   String?
-  category    String   // e.g., "grammar", "vocabulary", "pronunciation", "cultural"
-  subcategory String?  // e.g., "tense", "phrasal-verbs"
-  context     String   @db.Text // Error context
-  corrected   Boolean  @default(false) // Was it self-corrected?
-  timestamp   DateTime @default(now())
+  id           String   @id @default(uuid())
+  learnerId    String
+  languageCode String   // Which language the error was in
+  sessionId    String?
+  category     String   // e.g., "grammar", "vocabulary", "pronunciation", "cultural"
+  subcategory  String?  // e.g., "tense", "phrasal-verbs"
+  context      String   @db.Text // Error context
+  corrected    Boolean  @default(false) // Was it self-corrected?
+  timestamp    DateTime @default(now())
 
   // Relations
   learner Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
   session Session? @relation(fields: [sessionId], references: [id])
 
   @@index([learnerId])
+  @@index([languageCode])
   @@index([category])
   @@index([timestamp])
-  @@index([learnerId, category])
+  @@index([learnerId, languageCode, category])
 }
 
 // ==================== ASSESSMENT DOMAIN ====================
@@ -224,6 +271,7 @@ model ErrorLog {
 model Assessment {
   id              String         @id @default(uuid())
   learnerId       String
+  languageCode    String         // Which language was assessed
   type            AssessmentType
   moduleId        String?
   scores          Json           @default("{}")  // AssessmentScores
@@ -234,6 +282,7 @@ model Assessment {
   learner Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
 
   @@index([learnerId])
+  @@index([languageCode])
   @@index([type])
   @@index([createdAt])
 }
