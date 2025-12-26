@@ -22,13 +22,21 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         {
           type: 'role-play',
           prompt: "You're at a friend's birthday party and meet someone new",
-          expectedBehaviors: ['Natural introduction', 'Find common ground', 'Exchange contact details'],
+          expectedBehaviors: [
+            'Natural introduction',
+            'Find common ground',
+            'Exchange contact details',
+          ],
           difficulty: 'easy',
         },
         {
           type: 'scenario',
           prompt: 'At a professional networking event, introduce yourself to a potential contact',
-          expectedBehaviors: ['Professional introduction', 'Mention your work briefly', 'Show genuine interest'],
+          expectedBehaviors: [
+            'Professional introduction',
+            'Mention your work briefly',
+            'Show genuine interest',
+          ],
           difficulty: 'medium',
         },
       ],
@@ -64,7 +72,8 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         {
           mistake: 'Asking direct salary or age questions',
           correction: 'These topics are considered intrusive',
-          explanation: "Avoid 'How much do you earn?' or 'How old are you?' - it's considered rude.",
+          explanation:
+            "Avoid 'How much do you earn?' or 'How old are you?' - it's considered rude.",
         },
       ],
       successCriteria: [
@@ -82,7 +91,7 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         'Casual conversations about leisure activities and plans. Building rapport through shared interests.',
       objectives: [
         'Discuss hobbies using appropriate vocabulary',
-        'Ask about others\' interests genuinely',
+        "Ask about others' interests genuinely",
         'Make and respond to suggestions for activities',
       ],
       practiceActivities: [
@@ -95,7 +104,11 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         {
           type: 'role-play',
           prompt: 'Discover you share a hobby with someone and discuss it',
-          expectedBehaviors: ['Show enthusiasm appropriately', 'Exchange tips', 'Suggest meeting up'],
+          expectedBehaviors: [
+            'Show enthusiasm appropriately',
+            'Exchange tips',
+            'Suggest meeting up',
+          ],
           difficulty: 'medium',
         },
       ],
@@ -118,7 +131,11 @@ export async function seedScenarios1B(prisma: PrismaClient) {
           topic: 'Hobby Vocabulary',
           content:
             "Use 'I'm into...' or 'I'm quite keen on...' to express interest. 'I'm rather fond of...' for stronger affection.",
-          examples: ["I'm into gardening", "I'm quite keen on hiking", "I'm rather fond of old films"],
+          examples: [
+            "I'm into gardening",
+            "I'm quite keen on hiking",
+            "I'm rather fond of old films",
+          ],
         },
       ],
       commonMistakes: [
@@ -136,7 +153,7 @@ export async function seedScenarios1B(prisma: PrismaClient) {
       ],
       successCriteria: [
         'Discusses hobbies with appropriate enthusiasm',
-        'Shows genuine interest in others\' activities',
+        "Shows genuine interest in others' activities",
         'Uses British expressions for leisure activities',
       ],
       order: 2,
@@ -185,7 +202,11 @@ export async function seedScenarios1B(prisma: PrismaClient) {
           topic: 'Declining Language',
           content:
             "Use hedging: 'I'm afraid I...', 'Unfortunately...', 'I'd love to, but...' to soften refusals.",
-          examples: ["I'm afraid I can't make it", "I'd love to, but I've already got plans", 'That sounds lovely, but unfortunately...'],
+          examples: [
+            "I'm afraid I can't make it",
+            "I'd love to, but I've already got plans",
+            'That sounds lovely, but unfortunately...',
+          ],
         },
       ],
       commonMistakes: [
@@ -217,7 +238,7 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         'Coordinating plans with friends and colleagues. Negotiating times, places, and activities.',
       objectives: [
         'Propose meeting times and places',
-        'Negotiate when initial suggestions don\'t work',
+        "Negotiate when initial suggestions don't work",
         'Confirm arrangements clearly',
       ],
       practiceActivities: [
@@ -229,7 +250,7 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         },
         {
           type: 'challenge',
-          prompt: 'Your suggested time doesn\'t work for the other person - find an alternative',
+          prompt: "Your suggested time doesn't work for the other person - find an alternative",
           expectedBehaviors: ['Accept gracefully', 'Offer alternatives', 'Reach agreement'],
           difficulty: 'medium',
         },
@@ -253,7 +274,11 @@ export async function seedScenarios1B(prisma: PrismaClient) {
           topic: 'Suggestion Structures',
           content:
             "Use modal verbs: 'Shall we...?', 'Would you fancy...?', 'How about...?' for polite suggestions.",
-          examples: ['Shall we say 3 o\'clock?', 'Would you fancy grabbing lunch?', 'How about the Italian place?'],
+          examples: [
+            "Shall we say 3 o'clock?",
+            'Would you fancy grabbing lunch?',
+            'How about the Italian place?',
+          ],
         },
       ],
       commonMistakes: [
@@ -297,7 +322,8 @@ export async function seedScenarios1B(prisma: PrismaClient) {
         },
         {
           type: 'role-play',
-          prompt: 'Someone misunderstands something you said - clear it up without making them feel bad',
+          prompt:
+            'Someone misunderstands something you said - clear it up without making them feel bad',
           expectedBehaviors: ['Take some blame', 'Clarify meaning', 'Move on smoothly'],
           difficulty: 'medium',
         },
@@ -321,7 +347,11 @@ export async function seedScenarios1B(prisma: PrismaClient) {
           topic: 'Clarification Phrases',
           content:
             "Use softening language: 'I think there might be a bit of confusion', 'Sorry, I meant to say...'",
-          examples: ['Sorry, I think I was unclear', 'What I meant was...', 'Let me put it another way'],
+          examples: [
+            'Sorry, I think I was unclear',
+            'What I meant was...',
+            'Let me put it another way',
+          ],
         },
       ],
       commonMistakes: [
@@ -357,4 +387,3 @@ export async function seedScenarios1B(prisma: PrismaClient) {
 
   console.log(`      ✅ Created ${scenarios.length} scenarios for Module 1B`);
 }
-

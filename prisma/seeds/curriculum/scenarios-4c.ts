@@ -11,8 +11,7 @@ export async function seedScenarios4C(prisma: PrismaClient) {
       id: `${MODULE}-1`,
       moduleId: MODULE,
       title: 'Functioning as Cultural Insider',
-      context:
-        'Operating in British contexts with the ease and fluency of a cultural insider.',
+      context: 'Operating in British contexts with the ease and fluency of a cultural insider.',
       objectives: [
         'Navigate all British social contexts naturally',
         'Be accepted as culturally fluent',
@@ -22,13 +21,21 @@ export async function seedScenarios4C(prisma: PrismaClient) {
         {
           type: 'challenge',
           prompt: 'Navigate a complex British social situation with complete ease',
-          expectedBehaviors: ['Instinctive appropriate response', 'Cultural fluency', 'Natural integration'],
+          expectedBehaviors: [
+            'Instinctive appropriate response',
+            'Cultural fluency',
+            'Natural integration',
+          ],
           difficulty: 'hard',
         },
         {
           type: 'scenario',
           prompt: 'Host British guests and make them feel at ease',
-          expectedBehaviors: ['Cultural sensitivity', 'Appropriate hospitality', 'Natural interaction'],
+          expectedBehaviors: [
+            'Cultural sensitivity',
+            'Appropriate hospitality',
+            'Natural interaction',
+          ],
           difficulty: 'hard',
         },
       ],
@@ -51,7 +58,12 @@ export async function seedScenarios4C(prisma: PrismaClient) {
           topic: 'Automatic Responses',
           content:
             '"Sorry" when someone bumps into you, "Cheers" for thanks, "Right" to signal moving on - these are automatic.',
-          examples: ['Sorry (when bumped)', 'Cheers (thanks)', 'Right (moving on)', 'Ta (casual thanks)'],
+          examples: [
+            'Sorry (when bumped)',
+            'Cheers (thanks)',
+            'Right (moving on)',
+            'Ta (casual thanks)',
+          ],
         },
       ],
       commonMistakes: [
@@ -65,7 +77,7 @@ export async function seedScenarios4C(prisma: PrismaClient) {
           mistake: 'Over-performing British-ness',
           correction: 'Be yourself within British culture',
           explanation:
-            'Cultural fluency isn\'t performance. It\'s integrating British ways into your authentic self.',
+            "Cultural fluency isn't performance. It's integrating British ways into your authentic self.",
         },
       ],
       successCriteria: [
@@ -119,7 +131,11 @@ export async function seedScenarios4C(prisma: PrismaClient) {
           topic: 'Public Discourse Language',
           content:
             '"One might argue...", "It\'s worth considering...", "There\'s a case to be made for..." - measured contribution language.',
-          examples: ['One might argue that...', 'It\'s worth considering...', 'There\'s a case to be made...'],
+          examples: [
+            'One might argue that...',
+            "It's worth considering...",
+            "There's a case to be made...",
+          ],
         },
       ],
       commonMistakes: [
@@ -147,8 +163,7 @@ export async function seedScenarios4C(prisma: PrismaClient) {
       id: `${MODULE}-3`,
       moduleId: MODULE,
       title: 'Teaching British Culture and English',
-      context:
-        'Being able to teach British English and culture to others effectively.',
+      context: 'Being able to teach British English and culture to others effectively.',
       objectives: [
         'Teach British English effectively',
         'Explain British culture to learners',
@@ -187,7 +202,11 @@ export async function seedScenarios4C(prisma: PrismaClient) {
           topic: 'Teaching Language',
           content:
             '"In British culture, we often...", "This might seem strange, but...", "The reason British people do this is..."',
-          examples: ['In British culture...', 'The reason for this is...', 'You\'ll find that British people...'],
+          examples: [
+            'In British culture...',
+            'The reason for this is...',
+            "You'll find that British people...",
+          ],
         },
       ],
       commonMistakes: [
@@ -215,8 +234,7 @@ export async function seedScenarios4C(prisma: PrismaClient) {
       id: `${MODULE}-4`,
       moduleId: MODULE,
       title: 'Maintaining and Developing Proficiency',
-      context:
-        'Continuing to grow and maintain native-like proficiency over time.',
+      context: 'Continuing to grow and maintain native-like proficiency over time.',
       objectives: [
         'Maintain high level of British English',
         'Continue developing and learning',
@@ -226,7 +244,11 @@ export async function seedScenarios4C(prisma: PrismaClient) {
         {
           type: 'discussion',
           prompt: 'Discuss how you maintain and develop your British English proficiency',
-          expectedBehaviors: ['Reflect on learning', 'Share strategies', 'Demonstrate ongoing commitment'],
+          expectedBehaviors: [
+            'Reflect on learning',
+            'Share strategies',
+            'Demonstrate ongoing commitment',
+          ],
           difficulty: 'medium',
         },
         {
@@ -294,7 +316,11 @@ export async function seedScenarios4C(prisma: PrismaClient) {
         {
           type: 'discussion',
           prompt: 'Reflect on how British English has become part of who you are',
-          expectedBehaviors: ['Personal reflection', 'Identity integration', 'Authentic expression'],
+          expectedBehaviors: [
+            'Personal reflection',
+            'Identity integration',
+            'Authentic expression',
+          ],
           difficulty: 'hard',
         },
         {
@@ -331,13 +357,13 @@ export async function seedScenarios4C(prisma: PrismaClient) {
           mistake: 'Feeling you must choose between identities',
           correction: 'Multilingual identity is additive, not replacement',
           explanation:
-            'British English adds to who you are. It doesn\'t replace your other languages and cultures.',
+            "British English adds to who you are. It doesn't replace your other languages and cultures.",
         },
         {
           mistake: 'Performing rather than being',
           correction: 'Let British English be authentically yours',
           explanation:
-            'The goal isn\'t to pretend to be British. It\'s to be yourself, fluently, in British English.',
+            "The goal isn't to pretend to be British. It's to be yourself, fluently, in British English.",
         },
       ],
       successCriteria: [
@@ -359,4 +385,3 @@ export async function seedScenarios4C(prisma: PrismaClient) {
 
   console.log(`      ✅ Created ${scenarios.length} scenarios for Module 4C`);
 }
-

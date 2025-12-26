@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { prisma } from './shared/database/prisma';
 import { redis } from './shared/cache/redis';
 import { curriculumRoutes } from './modules/curriculum';
+import { learnerRoutes } from './modules/learner';
 
 const router = Router();
 
@@ -115,6 +116,9 @@ router.get('/api/v1/languages', async (_req: Request, res: Response) => {
 // Curriculum routes
 router.use('/api/v1/curriculum', curriculumRoutes);
 
+// Learner routes
+router.use('/api/v1/learners', learnerRoutes);
+
 // API info
 router.get('/api/v1', (_req: Request, res: Response) => {
   res.json({
@@ -130,7 +134,16 @@ router.get('/api/v1', (_req: Request, res: Response) => {
         scenarios: '/api/v1/curriculum/scenarios/:id',
         pathways: '/api/v1/curriculum/pathways',
       },
-      learners: '/api/v1/learners (coming soon)',
+      learners: {
+        list: '/api/v1/learners',
+        create: 'POST /api/v1/learners',
+        get: '/api/v1/learners/:id',
+        getByExternal: '/api/v1/learners/external/:externalId',
+        summary: '/api/v1/learners/:id/summary',
+        progress: '/api/v1/learners/:id/progress',
+        memory: '/api/v1/learners/:id/memory/:languageCode',
+        languages: '/api/v1/learners/:id/languages',
+      },
       sessions: '/api/v1/sessions (coming soon)',
     },
   });
