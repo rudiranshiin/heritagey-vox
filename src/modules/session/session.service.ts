@@ -374,7 +374,9 @@ export class SessionService {
     const correctionsMade = events.filter((e) => e.type === 'correction_given').length;
     const correctionsAccepted = events.filter((e) => e.type === 'correction_accepted').length;
     const hintsRequested = events.filter((e) => e.type === 'hint_requested').length;
-    const activitiesCompleted = events.filter((e) => e.type === 'practice_activity_completed').length;
+    const activitiesCompleted = events.filter(
+      (e) => e.type === 'practice_activity_completed'
+    ).length;
 
     const engagementScore = this.calculateEngagementScore(events, duration);
     const accuracyScore = this.calculateAccuracyScore(userMessages, errorsDetected);
@@ -411,7 +413,9 @@ export class SessionService {
       score = Math.max(score - hintsRequested * 5, 0);
     }
 
-    const activitiesCompleted = events.filter((e) => e.type === 'practice_activity_completed').length;
+    const activitiesCompleted = events.filter(
+      (e) => e.type === 'practice_activity_completed'
+    ).length;
     score += activitiesCompleted * 10;
 
     return Math.min(Math.round(score), 100);
@@ -431,7 +435,9 @@ export class SessionService {
 
     let totalGap = 0;
     for (let i = 1; i < userMessages.length; i++) {
-      const gap = new Date(userMessages[i].timestamp).getTime() - new Date(userMessages[i - 1].timestamp).getTime();
+      const gap =
+        new Date(userMessages[i].timestamp).getTime() -
+        new Date(userMessages[i - 1].timestamp).getTime();
       totalGap += gap;
     }
 
@@ -446,4 +452,3 @@ export class SessionService {
 }
 
 export const sessionService = new SessionService();
-

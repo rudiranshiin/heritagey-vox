@@ -4,6 +4,7 @@ import { redis } from './shared/cache/redis';
 import { curriculumRoutes } from './modules/curriculum';
 import { learnerRoutes } from './modules/learner';
 import { sessionRoutes } from './modules/session';
+import { assessmentRoutes } from './modules/assessment';
 
 const router = Router();
 
@@ -123,6 +124,9 @@ router.use('/api/v1/learners', learnerRoutes);
 // Session routes
 router.use('/api/v1/sessions', sessionRoutes);
 
+// Assessment routes
+router.use('/api/v1/assessments', assessmentRoutes);
+
 // API info
 router.get('/api/v1', (_req: Request, res: Response) => {
   res.json({
@@ -161,6 +165,19 @@ router.get('/api/v1', (_req: Request, res: Response) => {
         resume: 'POST /api/v1/sessions/:id/resume',
         complete: 'POST /api/v1/sessions/:id/complete',
         abandon: 'POST /api/v1/sessions/:id/abandon',
+      },
+      assessments: {
+        list: '/api/v1/assessments',
+        create: 'POST /api/v1/assessments',
+        get: '/api/v1/assessments/:id',
+        latest: '/api/v1/assessments/latest/:learnerId',
+        scores: '/api/v1/assessments/scores/:learnerId',
+        progression: '/api/v1/assessments/progression/:learnerId',
+        advance: 'POST /api/v1/assessments/progression/:learnerId/advance',
+        progress: '/api/v1/assessments/progression/:learnerId/progress',
+        competency: '/api/v1/assessments/competency/:learnerId',
+        recommendations: '/api/v1/assessments/recommendations/:learnerId',
+        learnerProgress: '/api/v1/assessments/learner-progress/:learnerId',
       },
     },
   });

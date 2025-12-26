@@ -1,4 +1,10 @@
-import type { ErrorCategory, ErrorPattern, LearnerPreferences, LearnerProfile, ProgressData } from '../learner/learner.types';
+import type {
+  ErrorCategory,
+  ErrorPattern,
+  LearnerPreferences,
+  LearnerProfile,
+  ProgressData,
+} from '../learner/learner.types';
 
 export type SessionStatus = 'ACTIVE' | 'COMPLETED' | 'ABANDONED' | 'PAUSED';
 
@@ -204,4 +210,3 @@ export interface ActiveSessionState {
   errorsInSession: number;
   currentActivityIndex: number;
 }
-

@@ -19,7 +19,10 @@ export class SessionController {
         return res.status(400).json({ error: 'learnerId and languageCode are required' });
       }
 
-      const existingActive = await sessionService.getActiveSession(data.learnerId, data.languageCode);
+      const existingActive = await sessionService.getActiveSession(
+        data.learnerId,
+        data.languageCode
+      );
       if (existingActive) {
         return res.status(409).json({
           error: 'Active session already exists',
@@ -197,7 +200,8 @@ export class SessionController {
 
   async list(req: Request, res: Response) {
     try {
-      const { learnerId, language, scenarioId, status, startDate, endDate, limit, offset } = req.query;
+      const { learnerId, language, scenarioId, status, startDate, endDate, limit, offset } =
+        req.query;
 
       const filter: SessionFilter = {
         learnerId: learnerId as string,
@@ -260,4 +264,3 @@ export class SessionController {
 }
 
 export const sessionController = new SessionController();
-
