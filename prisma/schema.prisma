@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== LANGUAGE DOMAIN ====================
+
+model Language {
+  code       String   @id // ISO code: "en-GB", "fr-FR", "es-ES"
+  name       String // English name: "British English", "French"
+  nativeName String // Native name: "British English", "Français"
+  flag       String // Emoji: "🇬🇧", "🇫🇷"
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  modules          Module[]
+  pathways         Pathway[]
+  learnerLanguages LearnerLanguage[]
+  learnerMemories  LearnerMemory[]
+}
+
+// ==================== LEARNER DOMAIN ====================
+
+model Learner {
+  id         String   @id @default(uuid())
+  externalId String   @unique // From main Heritagey backend
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  languages   LearnerLanguage[]
+  memories    LearnerMemory[]
+  sessions    Session[]
+  errorLogs   ErrorLog[]
+  assessments Assessment[]
+
+  @@index([externalId])
+}
+
+model LearnerLanguage {
+  id              String   @id @default(uuid())
+  learnerId       String
+  languageCode    String
+  currentLevel    Level    @default(A2)
+  currentModuleId String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  learner  Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageCode], references: [code])
+
+  @@unique([learnerId, languageCode])
+  @@index([learnerId])
+  @@index([languageCode])
+}
+
+model LearnerMemory {
+  id            String   @id @default(uuid())
+  learnerId     String
+  languageCode  String // Memory is per-language
+  progressData  Json     @default("{}")
+  errorPatterns Json     @default("[]")
+  preferences   Json     @default("{}")
+  profile       Json     @default("{}")
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  learner  Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageCode], references: [code])
+
+  @@unique([learnerId, languageCode])
+  @@index([learnerId])
+  @@index([languageCode])
+}
+
+enum Level {
+  A2
+  B1
+  B2
+  C1
+  C2
+}
+
+// ==================== CURRICULUM DOMAIN ====================
+
+model Module {
+  id             String   @id // e.g., "en-GB:1A", "fr-FR:2B"
+  languageCode   String
+  parentModuleId String? // e.g., "1", "2", "3", "4" for top-level grouping
+  title          String
+  description    String?  @db.Text
+  level          String // e.g., "A2-B1", "B1-B2"
+  objectives     Json     @default("[]")
+  duration       String // e.g., "3 weeks"
+  order          Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  language  Language   @relation(fields: [languageCode], references: [code])
+  scenarios Scenario[]
+
+  @@index([languageCode])
+  @@index([parentModuleId])
+  @@index([level])
+}
+
+model Scenario {
+  id                 String   @id // e.g., "en-GB:1A-1", "fr-FR:1A-2"
+  moduleId           String
+  title              String
+  context            String   @db.Text
+  objectives         Json     @default("[]")
+  practiceActivities Json     @default("[]")
+  culturalInsights   Json     @default("[]")
+  grammarNotes       Json     @default("[]")
+  commonMistakes     Json     @default("[]")
+  successCriteria    Json     @default("[]")
+  order              Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  module   Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  sessions Session[]
+
+  @@index([moduleId])
+}
+
+model Pathway {
+  id                String   @id // e.g., "en-GB:business", "fr-FR:academic"
+  languageCode      String
+  name              String
+  description       String   @db.Text
+  moduleOverrides   Json     @default("{}")
+  additionalContent Json     @default("[]")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  language Language @relation(fields: [languageCode], references: [code])
+
+  @@index([languageCode])
+}
+
+// ==================== SESSION DOMAIN ====================
+
+model Session {
+  id           String        @id @default(uuid())
+  learnerId    String
+  languageCode String
+  scenarioId   String?
+  status       SessionStatus @default(ACTIVE)
+  startedAt    DateTime      @default(now())
+  completedAt  DateTime?
+  events       Json          @default("[]")
+  metrics      Json?
+  metadata     Json?
+
+  // Relations
+  learner   Learner    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  scenario  Scenario?  @relation(fields: [scenarioId], references: [id])
+  errorLogs ErrorLog[]
+
+  @@index([learnerId])
+  @@index([languageCode])
+  @@index([status])
+  @@index([startedAt])
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+  PAUSED
+}
+
+model ErrorLog {
+  id           String   @id @default(uuid())
+  learnerId    String
+  languageCode String
+  sessionId    String?
+  category     String // e.g., "grammar", "vocabulary", "pronunciation", "cultural"
+  subcategory  String? // e.g., "tense", "phrasal-verbs"
+  context      String   @db.Text
+  corrected    Boolean  @default(false)
+  timestamp    DateTime @default(now())
+
+  // Relations
+  learner Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id])
+
+  @@index([learnerId])
+  @@index([languageCode])
+  @@index([category])
+  @@index([timestamp])
+  @@index([learnerId, languageCode, category])
+}
+
+// ==================== ASSESSMENT DOMAIN ====================
+
+model Assessment {
+  id              String         @id @default(uuid())
+  learnerId       String
+  languageCode    String
+  type            AssessmentType
+  moduleId        String?
+  scores          Json           @default("{}")
+  recommendations Json           @default("[]")
+  createdAt       DateTime       @default(now())
+
+  // Relations
+  learner Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId])
+  @@index([languageCode])
+  @@index([type])
+  @@index([createdAt])
+}
+
+enum AssessmentType {
+  INFORMAL
+  MILESTONE
+}
+
