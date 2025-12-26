@@ -1,0 +1,677 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Heritagey Vox - British English Curriculum API",
+    "description": "API for context-engineered British English curriculum backend",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Heritagey Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    { "name": "Health", "description": "Health check endpoints" },
+    { "name": "Learners", "description": "Learner management" },
+    { "name": "Memory", "description": "Learner memory management" },
+    { "name": "Curriculum", "description": "Curriculum content" },
+    { "name": "Sessions", "description": "Session management" },
+    { "name": "Assessments", "description": "Assessment and progression" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learners": {
+      "post": {
+        "tags": ["Learners"],
+        "summary": "Create a new learner",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLearnerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Learner created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Learner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learners/{learnerId}": {
+      "get": {
+        "tags": ["Learners"],
+        "summary": "Get learner by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "learnerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Learner found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Learner"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Learner not found"
+          }
+        }
+      }
+    },
+    "/api/v1/learners/{learnerId}/memory": {
+      "get": {
+        "tags": ["Memory"],
+        "summary": "Get learner memory",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "learnerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Learner memory",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearnerMemory"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Memory"],
+        "summary": "Update learner memory",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "learnerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memory updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LearnerMemory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learners/{learnerId}/errors": {
+      "post": {
+        "tags": ["Memory"],
+        "summary": "Log an error occurrence",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "learnerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogErrorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Error logged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorLog"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/curriculum/modules": {
+      "get": {
+        "tags": ["Curriculum"],
+        "summary": "List all curriculum modules",
+        "responses": {
+          "200": {
+            "description": "List of modules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Module"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/curriculum/modules/{moduleId}/scenarios": {
+      "get": {
+        "tags": ["Curriculum"],
+        "summary": "Get scenarios for a module",
+        "parameters": [
+          {
+            "name": "moduleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of scenarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Scenario"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/curriculum/scenarios/{scenarioId}": {
+      "get": {
+        "tags": ["Curriculum"],
+        "summary": "Get scenario details",
+        "parameters": [
+          {
+            "name": "scenarioId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scenario details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scenario"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions": {
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "Create a new learning session",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session created with context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionWithContext"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/{sessionId}/context": {
+      "get": {
+        "tags": ["Sessions"],
+        "summary": "Get session context",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionContext"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/{sessionId}/events": {
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "Record session event",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionEvent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event recorded"
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/{sessionId}/complete": {
+      "post": {
+        "tags": ["Sessions"],
+        "summary": "Complete a session",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/learners/{learnerId}/progression": {
+      "get": {
+        "tags": ["Assessments"],
+        "summary": "Get progression recommendations",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "learnerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Progression recommendations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressionRecommendation"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "healthy" },
+          "database": { "type": "string", "example": "connected" },
+          "cache": { "type": "string", "example": "connected" }
+        }
+      },
+      "CreateLearnerRequest": {
+        "type": "object",
+        "required": ["externalId"],
+        "properties": {
+          "externalId": { "type": "string" },
+          "profile": { "$ref": "#/components/schemas/LearnerProfile" }
+        }
+      },
+      "Learner": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "externalId": { "type": "string" },
+          "currentLevel": { "type": "string", "enum": ["A2", "B1", "B2", "C1", "C2"] },
+          "currentModuleId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "LearnerMemory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "learnerId": { "type": "string", "format": "uuid" },
+          "progressData": { "$ref": "#/components/schemas/ProgressData" },
+          "errorPatterns": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ErrorPattern" }
+          },
+          "preferences": { "$ref": "#/components/schemas/LearnerPreferences" },
+          "profile": { "$ref": "#/components/schemas/LearnerProfile" }
+        }
+      },
+      "ProgressData": {
+        "type": "object",
+        "properties": {
+          "completedScenarios": { "type": "array", "items": { "type": "string" } },
+          "milestones": { "type": "array", "items": { "type": "string" } },
+          "totalSessionTime": { "type": "integer" },
+          "sessionsCount": { "type": "integer" }
+        }
+      },
+      "ErrorPattern": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "subcategory": { "type": "string" },
+          "frequency": { "type": "integer" },
+          "lastOccurred": { "type": "string", "format": "date-time" },
+          "trend": { "type": "string", "enum": ["improving", "stable", "regressing"] }
+        }
+      },
+      "LearnerPreferences": {
+        "type": "object",
+        "properties": {
+          "formalityLevel": { "type": "string", "enum": ["formal", "moderate", "casual"] },
+          "engagingTopics": { "type": "array", "items": { "type": "string" } },
+          "pace": { "type": "string", "enum": ["fast", "moderate", "slow"] }
+        }
+      },
+      "LearnerProfile": {
+        "type": "object",
+        "properties": {
+          "l1Background": { "type": "string" },
+          "field": { "type": "string" },
+          "goals": { "type": "array", "items": { "type": "string" } },
+          "interests": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "UpdateMemoryRequest": {
+        "type": "object",
+        "properties": {
+          "progressData": { "$ref": "#/components/schemas/ProgressData" },
+          "preferences": { "$ref": "#/components/schemas/LearnerPreferences" },
+          "profile": { "$ref": "#/components/schemas/LearnerProfile" }
+        }
+      },
+      "LogErrorRequest": {
+        "type": "object",
+        "required": ["category", "context"],
+        "properties": {
+          "category": { "type": "string" },
+          "subcategory": { "type": "string" },
+          "context": { "type": "string" },
+          "scenarioId": { "type": "string" },
+          "corrected": { "type": "boolean" }
+        }
+      },
+      "ErrorLog": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "learnerId": { "type": "string", "format": "uuid" },
+          "category": { "type": "string" },
+          "context": { "type": "string" },
+          "corrected": { "type": "boolean" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Module": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "parentModuleId": { "type": "string" },
+          "title": { "type": "string" },
+          "level": { "type": "string" },
+          "objectives": { "type": "array", "items": { "type": "string" } },
+          "duration": { "type": "string" }
+        }
+      },
+      "Scenario": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "moduleId": { "type": "string" },
+          "title": { "type": "string" },
+          "context": { "type": "string" },
+          "objectives": { "type": "array", "items": { "type": "string" } },
+          "practiceActivities": { "type": "array", "items": { "type": "object" } },
+          "culturalInsights": { "type": "array", "items": { "type": "object" } },
+          "grammarNotes": { "type": "array", "items": { "type": "object" } },
+          "commonMistakes": { "type": "array", "items": { "type": "object" } },
+          "successCriteria": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "CreateSessionRequest": {
+        "type": "object",
+        "required": ["learnerId"],
+        "properties": {
+          "learnerId": { "type": "string", "format": "uuid" },
+          "scenarioId": { "type": "string" },
+          "type": { "type": "string", "enum": ["practice", "assessment"] }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "learnerId": { "type": "string", "format": "uuid" },
+          "scenarioId": { "type": "string" },
+          "status": { "type": "string", "enum": ["ACTIVE", "COMPLETED", "ABANDONED"] },
+          "startedAt": { "type": "string", "format": "date-time" },
+          "completedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SessionWithContext": {
+        "type": "object",
+        "properties": {
+          "sessionId": { "type": "string", "format": "uuid" },
+          "context": { "$ref": "#/components/schemas/SessionContext" }
+        }
+      },
+      "SessionContext": {
+        "type": "object",
+        "properties": {
+          "learnerMemory": { "$ref": "#/components/schemas/LearnerMemory" },
+          "scenario": { "$ref": "#/components/schemas/Scenario" },
+          "recommendations": {
+            "type": "object",
+            "properties": {
+              "focusAreas": { "type": "array", "items": { "type": "string" } },
+              "errorPatternsToWatch": { "type": "array", "items": { "type": "string" } },
+              "culturalPointsToReinforce": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      },
+      "SessionEvent": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["error_detected", "self_correction", "cultural_confusion", "fluency_hesitation", "topic_engaged"]
+          },
+          "data": { "type": "object" }
+        }
+      },
+      "CompleteSessionRequest": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "fluencyScore": { "type": "number" },
+              "accuracyScore": { "type": "number" },
+              "confidenceScore": { "type": "number" },
+              "engagementScore": { "type": "number" }
+            }
+          },
+          "feedback": {
+            "type": "object",
+            "properties": {
+              "overallQuality": { "type": "integer" },
+              "learnerSatisfaction": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "ProgressionRecommendation": {
+        "type": "object",
+        "properties": {
+          "currentLevel": { "type": "string" },
+          "readyForAdvancement": { "type": "boolean" },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "action": { "type": "string", "enum": ["advance", "consolidate", "review"] },
+                "confidence": { "type": "number" },
+                "reasoning": { "type": "string" }
+              }
+            }
+          },
+          "areasForReview": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "topic": { "type": "string" },
+                "suggestedScenarios": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
